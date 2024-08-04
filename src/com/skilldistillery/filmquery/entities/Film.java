@@ -15,13 +15,14 @@ public class Film {
   private double replacementCost;
   private String rating;
   private String specialFeatures;
-  private List<Actor> actors;
+  private String language; 
+  private List<Actor> actors; 
 
   public Film() {}
 
   public Film(int id, String title, String description, short releaseYear, int languageId, 
               int rentalDuration, double rentalRate, int length, double replacementCost, 
-              String rating, String specialFeatures) {
+              String rating, String specialFeatures, String language, List<Actor> actors) { 
     this.id = id;
     this.title = title;
     this.description = description;
@@ -33,6 +34,8 @@ public class Film {
     this.replacementCost = replacementCost;
     this.rating = rating;
     this.specialFeatures = specialFeatures;
+    this.language = language; 
+    this.actors = actors; 
   }
 
   public int getId() {
@@ -123,11 +126,19 @@ public class Film {
     this.specialFeatures = specialFeatures;
   }
 
-  public List<Actor> getActors() {
+  public String getLanguage() { 
+    return language;
+  }
+
+  public void setLanguage(String language) { 
+    this.language = language;
+  }
+
+  public List<Actor> getActors() { 
     return actors;
   }
 
-  public void setActors(List<Actor> actors) {
+  public void setActors(List<Actor> actors) { 
     this.actors = actors;
   }
 
@@ -136,7 +147,7 @@ public class Film {
     return "Film [id=" + id + ", title=" + title + ", description=" + description + ", releaseYear=" + releaseYear
         + ", languageId=" + languageId + ", rentalDuration=" + rentalDuration + ", rentalRate=" + rentalRate
         + ", length=" + length + ", replacementCost=" + replacementCost + ", rating=" + rating
-        + ", specialFeatures=" + specialFeatures + ", actors=" + actors + "]";
+        + ", specialFeatures=" + specialFeatures + ", language=" + language + ", actors=" + actors + "]"; 
   }
 
   @Override
