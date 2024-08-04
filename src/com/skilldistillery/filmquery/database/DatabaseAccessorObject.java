@@ -14,6 +14,14 @@ import com.skilldistillery.filmquery.entities.Film;
 public class DatabaseAccessorObject implements DatabaseAccessor {
   private static String url = "jdbc:mysql://localhost:3306/sdvid?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=US/Mountain";
 
+  static {
+    try {
+      Class.forName("com.mysql.cj.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load MySQL JDBC driver", e);
+    }
+  }
+
   @Override
   public Film findFilmById(int filmId) {
     Film film = null;
@@ -86,5 +94,33 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
       e.printStackTrace();
     }
     return actors;
+  }
+
+  @Override
+  public List<Film> findFilmsByKeyword(String keyword) {
+    List<Film> films = new ArrayList<>();
+    try {
+      Connection conn = DriverManager.getConnection(url, "student", "student");
+      String sql = "SELECT id, title, description, release_year, language_id, rental_duration, "
+                 + "rental_rate, length, replacement_cost, rating, special_features "
+                 + "FROM film WHERE title LIKE ? OR description LIKE ?";
+      PreparedStatement stmt = conn.prepareStatement(sql);
+      stmt.setString(1, "%" + keyword + "%");
+      stmt.setString(2, "%" + keyword + "%");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        Film film = new Film(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getShort(4), rs.getInt(5), 
+                             rs.getInt(6), rs.getDouble(7), rs.getInt(8), rs.getDouble(9), 
+                             rs.getString(10), rs.getString(11));
+        film.setActors(findActorsByFilmId(film.getId()));
+        films.add(film);
+      }
+      rs.close();
+      stmt.close();
+      conn.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return films;
   }
 }
